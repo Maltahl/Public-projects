@@ -1,0 +1,94 @@
+CREATE USER sonarr WITH PASSWORD 'sonarrdbnuts';
+CREATE DATABASE "sonarr-main";
+CREATE DATABASE "sonarr-log";
+GRANT ALL PRIVILEGES ON DATABASE "sonarr-main" to sonarr;
+GRANT ALL PRIVILEGES ON DATABASE "sonarr-log" to sonarr;
+
+
+
+CREATE USER radarr WITH PASSWORD 'radarrdbnuts';
+CREATE DATABASE "radarr-main";
+CREATE DATABASE "radarr-log";
+GRANT ALL PRIVILEGES ON DATABASE "radarr-main" to radarr;
+GRANT ALL PRIVILEGES ON DATABASE "radarr-log" to radarr;
+
+CREATE USER bazarr WITH PASSWORD 'bazarrdbnuts';
+CREATE DATABASE "bazarr-main";
+CREATE DATABASE "bazarr-log";
+GRANT ALL PRIVILEGES ON DATABASE "bazarr-main" to bazarr;
+GRANT ALL PRIVILEGES ON DATABASE "bazarr-log" to bazarr;
+
+CREATE USER prowlarr WITH PASSWORD 'prowlarrdbnuts';
+CREATE DATABASE "prowlarr-main";
+CREATE DATABASE "prowlarr-log";
+GRANT ALL PRIVILEGES ON DATABASE "prowlarr-main" to prowlarr;
+GRANT ALL PRIVILEGES ON DATABASE "prowlarr-log" to prowlarr;
+
+
+
+
+
+  <PostgresUser>sonarr</PostgresUser>
+  <PostgresPassword>sonarrdbnuts</PostgresPassword>
+  <PostgresPort>5432</PostgresPort>
+  <PostgresHost>10.0.1.151</PostgresHost>
+
+
+cp sonarr.db /media/Colo/Server/Persistent-Storage/postgres/sonarr-main.db
+
+docker run --rm -v /media/Colo/Server/Persistent-Storage/postgres/sonarr-main.db:/sonarr-main.db:ro --network=host ghcr.io/roxedus/pgloader --with "prefetch rows = 100" --with "batch size = 1MB" --with "quote identifiers" --with "data only" /sonarr-main.db "postgresql://sonarr:sonarrdbnuts@10.0.1.151/sonarr-main"
+
+
+
+  <PostgresUser>radarr</PostgresUser>
+  <PostgresPassword>radarrdbnuts</PostgresPassword>
+  <PostgresPort>5432</PostgresPort>
+  <PostgresHost>10.0.1.151</PostgresHost>
+
+
+cp radarr.db /media/Colo/Server/Persistent-Storage/postgres/radarr-main.db
+
+docker run --rm -v /media/Colo/Server/Persistent-Storage/postgres/radarr-main.db:/radarr-main.db:ro --network=host ghcr.io/roxedus/pgloader --with "prefetch rows = 100" --with "batch size = 1MB" --with "quote identifiers" --with "data only" /radarr-main.db "postgresql://radarr:radarrdbnuts@10.0.1.151/radarr-main"
+
+
+  <PostgresUser>prowlarr</PostgresUser>
+  <PostgresPassword>prowlarrdbnuts</PostgresPassword>
+  <PostgresPort>5432</PostgresPort>
+  <PostgresHost>10.0.1.151</PostgresHost>
+
+
+cp prowlarr.db /media/Colo/Server/Persistent-Storage/postgres/prowlarr-main.db
+
+docker run --rm -v /media/Colo/Server/Persistent-Storage/postgres/prowlarr-main.db:/prowlarr-main.db:ro --network=host ghcr.io/roxedus/pgloader --with "prefetch rows = 100" --with "batch size = 1MB" --with "quote identifiers" --with "data only" /prowlarr-main.db "postgresql://prowlarr:prowlarrdbnuts@10.0.1.151/prowlarr-main"
+
+
+[postgresql]
+enabled = True
+host = 10.0.1.151
+port = 5432
+database = bazarr-main
+username = _bazarr_
+password = _bazarrdbnuts_
+
+cp bazarr.db /media/Colo/Server/Persistent-Storage/postgres/bazarr-main.db
+
+docker run --rm -v /media/Colo/Server/Persistent-Storage/postgres/bazarr-main.db:/bazarr-main.db:ro --network=host ghcr.io/roxedus/pgloader --with "prefetch rows = 100" --with "batch size = 1MB" --with "quote identifiers" --with "data only" /bazarr-main.db "postgresql://bazarr:bazarrdbnuts@10.0.1.151/bazarr-main"
+
+
+
+
+
+CREATE USER lidarr WITH PASSWORD 'lidarrdbnuts';
+CREATE DATABASE "lidarr-main";
+CREATE DATABASE "lidarr-log";
+GRANT ALL PRIVILEGES ON DATABASE "lidarr-main" to lidarr;
+GRANT ALL PRIVILEGES ON DATABASE "lidarr-log" to lidarr;
+
+  <PostgresUser>lidarr</PostgresUser>
+  <PostgresPassword>lidarrdbnuts</PostgresPassword>
+  <PostgresPort>5432</PostgresPort>
+  <PostgresHost>10.0.1.151</PostgresHost>
+
+cp lidarr.db /media/Colo/Server/Persistent-Storage/postgres/lidarr-main.db
+
+docker run --rm -v /media/Colo/Server/Persistent-Storage/postgres/lidarr-main.db:/lidarr-main.db:ro --network=host ghcr.io/roxedus/pgloader --with "prefetch rows = 100" --with "batch size = 1MB" --with "quote identifiers" --with "data only" /lidarr-main.db "postgresql://lidarr:lidarrdbnuts@10.0.1.151/lidarr-main"
