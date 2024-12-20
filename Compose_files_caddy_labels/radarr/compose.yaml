@@ -1,0 +1,63 @@
+services:
+
+  radarr:
+
+    container_name: "radarr"
+
+    #dns:
+    #  - "10.20.30.55"
+
+    entrypoint:
+      - "/init"
+
+    environment:
+      - "TZ=Etc/UTC"
+      - "PUID=1000"
+      - "PGID=1000"
+      - "PATH=/lsiopy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "PS1=$(whoami)@$(hostname):$(pwd)\\$"
+      - "HOME=/root"
+      - "TERM=xterm"
+      - "S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0"
+      - "S6_VERBOSITY=1"
+      - "S6_STAGE2_HOOK=/docker-mods"
+      - "VIRTUAL_ENV=/lsiopy"
+      - "LSIO_FIRST_PARTY=true"
+      - "XDG_CONFIG_HOME=/config/xdg"
+
+    image: "lscr.io/linuxserver/radarr:latest"
+
+    #labels:
+    #  caddy: radarr.domain.dk
+    #  caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+    #  caddy.abort: "@denied"
+    #  caddy.reverse_proxy: "{{upstreams 7878}}"
+    logging:
+      driver: "json-file"
+      options: {}
+
+    network_mode: "container:gluetun"
+
+    #ports:
+    #  - "7878:7878/tcp"
+
+    healthcheck: 
+     test: curl --fail http://localhost:7878 || exit 1 
+     interval: 10s 
+     retries: 5 
+     start_period: 5s 
+     timeout: 10s
+
+    restart: "unless-stopped"
+
+    volumes:
+      - "/media/Colo:/media"
+      - "/media/Colo/Server/Persistent-Storage/radarr:/config"
+
+    working_dir: "/"
+
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+networks:
+  gluetun_network:
+   external: true

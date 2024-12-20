@@ -1,0 +1,21 @@
+services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/Copenhagen
+      - PORT=5055 #optional
+    ports:
+      - 5055:5055
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/jellyseerr:/app/config
+    restart: unless-stopped
+    networks:
+      - caddy
+    labels:
+      caddy: request.domain.dk
+      caddy.reverse_proxy: "{{upstreams 5055}}"
+networks:
+  caddy:
+    external: true

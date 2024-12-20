@@ -1,0 +1,15 @@
+services:
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    network_mode: "container:gluetun"
+    container_name: lidarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - "/media/Colo:/media"
+      - "/media/Colo/Server/Persistent-Storage/lidarr:/config"
+    #ports:
+    #  - 8686:8686
+    restart: unless-stopped

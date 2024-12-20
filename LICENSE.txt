@@ -1,0 +1,62 @@
+Custom Software License Based on GPLv2
+
+Copyright (C) [2024] [Wickedfalcon/Maltahl @ Github.com]
+
+This software is free and open-source software; you can use, modify, and distribute it under the terms outlined below. The intent of this license is to ensure free usage while retaining exclusive rights for commercialization and requiring contributions of changes or derivatives back to the main project.
+
+---
+
+### 1. Preamble
+This license is derived from the GNU General Public License version 2 (GPLv2). The following modifications and additions apply to ensure that the original author retains exclusive commercialization rights and that any modifications or derivatives are contributed back to the main repository.
+
+---
+
+### 2. Permissions
+1. You are free to use, copy, modify, and distribute the Software, provided that:
+   - All changes or additions you make to the Software must be shared back with the main project ("Upstream Contribution Requirement").
+   - Any distributed versions of the Software, modified or unmodified, must include this license in full.
+
+2. You may not commercialize this Software, or any modifications or derivatives of it, without prior written permission from the original copyright holder.
+
+---
+
+### 3. Restrictions
+1. You may not modify or remove this license.
+2. You may not use the Software in any way that violates this license or creates a derivative license that contradicts its terms.
+3. You must document all changes made to the Software and submit these changes to the main repository designated by the copyright holder within 30 days of modification or distribution.
+
+---
+
+### 4. Contribution Requirement
+1. If you modify or create derivative works based on the Software, you must:
+   - Provide the modified source code to the copyright holder.
+   - Grant the copyright holder a perpetual, non-exclusive, royalty-free license to use, distribute, and sublicense your contributions.
+2. Contributions must be made in a manner consistent with the Software’s original functionality and licensing terms.
+
+---
+
+### 5. Commercialization
+1. The copyright holder retains exclusive rights to commercialize the Software. No user or distributor of the Software may sell or otherwise commercialize the Software, modified or unmodified, without express written permission.
+2. If you wish to commercialize the Software, you must negotiate a separate agreement with the copyright holder.
+
+---
+
+### 6. Warranty Disclaimer
+As with the GPLv2:
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+---
+
+### 7. Termination
+1. Your rights under this license will terminate automatically if you fail to comply with its terms. Upon termination, you must cease all use and distribution of the Software.
+2. Termination does not affect obligations that existed prior to termination.
+
+---
+
+### 8. Governing Law
+This license shall be governed by and construed in accordance with the laws of Denmark and other European Countries.
+
+---
+
+For questions or requests related to this license, including commercialization inquiries, contact maltahl nospace gaming at gmail.
+

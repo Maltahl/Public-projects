@@ -1,0 +1,18 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/uptime-kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      # <Host Port>:<Container Port>
+      - 8001:3001
+    networks:
+      - caddy
+    labels:
+      caddy: status.domain.dk
+      caddy.reverse_proxy: "{{upstreams 3001}}"
+    restart: unless-stopped
+networks:
+  caddy:
+    external: true

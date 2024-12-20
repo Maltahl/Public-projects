@@ -1,0 +1,38 @@
+
+version: '3.9'
+services:
+  iventoy:
+    image: ziggyds/iventoy:latest
+    container_name: iventoy
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    ports:
+      - 26000:26000
+      - 16000:16000
+      - 10809:10809
+      - 67:67/udp
+      - 69:69/udp
+    volumes:
+      - isos:/app/iso
+      - config:/app/data
+      - /media/Colo/Server/Persistent-Storage/iventoy/log:/app/log
+    environment:
+      - AUTO_START_PXE=true
+#    labels:
+#      - "com.centurylinklabs.watchtower.enable=true"
+
+
+volumes:
+  isos:
+    driver: local
+    driver_opts:
+      type: none
+      device: /media/Colo/ISOs/ISO
+      o: bind
+  config:
+    driver: local
+    driver_opts:
+      type: none
+      device: /media/Colo/Server/Persistent-Storage/iventoy
+      o: bind

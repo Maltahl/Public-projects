@@ -1,0 +1,37 @@
+version: "2.1"
+services:
+  codeserver:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD=quickbrownfox.jumps.over-thelazyfox #optional
+      - HASHED_PASSWORD= #optional
+      - SUDO_PASSWORD=quickbrownfox.jumps.over-thelazyfox #optional
+      - SUDO_PASSWORD_HASH= #optional
+      - PROXY_DOMAIN=codeserver.domain.dk #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/codeserver:/config
+    networks:
+      - caddy
+    labels:
+      caddy: codeserver.domain.dk
+      caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy.abort: "@denied"
+      caddy.reverse_proxy: "{{upstreams 8443}}"
+
+    ports:
+      - "9449:8443/tcp"
+
+    healthcheck: 
+     test: curl --fail http://localhost:8443 || exit 1 
+     interval: 10s 
+     retries: 5 
+     start_period: 5s 
+     timeout: 10s
+networks:
+   caddy:
+    external: true

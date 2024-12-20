@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres:14
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: quickbrownfox.jumps.over-thelazyfox
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes: 
+     - /media/Colo/Server/Persistent-Storage/postgres:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080

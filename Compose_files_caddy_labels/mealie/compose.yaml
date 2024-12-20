@@ -1,0 +1,25 @@
+version: "3.1"
+services:
+  mealie:
+    container_name: mealie
+    image: ghcr.io/mealie-recipes/mealie:latest
+    #image: hkotel/mealie:latest
+    restart: always
+    ports:
+      - 9925:9000
+    networks:
+      - caddy
+    labels:
+      caddy: meal.domain.dk
+      caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy.abort: "@denied"
+      caddy.reverse_proxy: "{{upstreams 9000}}"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Copenhagen
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/mealie:/app/data
+networks:
+  caddy:
+    external: true

@@ -1,0 +1,33 @@
+version: "3.7"
+## remember to create a docker network called "caddy" before deploying
+
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:2.9-alpine
+    restart: unless-stopped
+    networks:
+      - caddy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/caddy-test/etc/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /media/Colo/Server/Persistent-Storage/caddy-test/srv:/srv
+      - /media/Colo/Server/Persistent-Storage/caddy-test/data:/data
+      - /media/Colo/Server/Persistent-Storage/caddy-test:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - CADDY_INGRESS_NETWORKS=caddy
+      - ACME_AGREE=true
+    healthcheck: 
+     test: wget --no-verbose --tries=1 --spider https://caddy.domain.dk/health-check || exit 1 
+     interval: 10s 
+     retries: 5 
+     start_period: 5s 
+     timeout: 10s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+networks:
+  caddy:
+   external: true

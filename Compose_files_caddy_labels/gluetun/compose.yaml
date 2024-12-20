@@ -1,0 +1,77 @@
+version: "3"
+services:
+## remember to create a docker network called "gluetun_network" before deploying
+
+  gluetun:
+
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    network_mode: gluetun_network
+
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 9988:8888/tcp # HTTP proxy
+      - 9988:8888/udp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks
+    #  - 8000:8000/tcp # Built-in HTTP control server # disabled to allow for Portainer
+      - 8989:8989/tcp # sonarr http gui port
+      - 7878:7878/tcp # radarr http gui port
+      - 9696:9696/tcp # prowlarr http gui port
+      - 8080:8080/tcp # qbittorrent http gui port
+      - 8191:8191/tcp # flaresolverr
+      - 6767:6767/tcp # bazarr
+      - 8686:8686 # lidarr
+    labels: # labels used for caddy reverse proxy, each domain for each container that is behind gluetun must be done here.
+      caddy_0: bazarr.domain.dk
+      caddy_0.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy_0.abort: "@denied"    
+      caddy_0.reverse_proxy: 10.0.1.151:6767 # normally not needed but must be defined here as auto IP does not work as caddy is not in same docker network as these "subcontainers"
+      caddy_1: prowlarr.domain.dk
+      caddy_1.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy_1.abort: "@denied"
+      caddy_1.reverse_proxy: 10.0.1.151:9696
+      caddy_2: download.domain.dk
+      caddy_2.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy_2.abort: "@denied"
+      caddy_2.reverse_proxy: 10.0.1.151:8080
+      caddy_3: radarr.domain.dk
+      caddy_3.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy_3.abort: "@denied"
+      caddy_3.reverse_proxy: 10.0.1.151:7878
+      caddy_4: sonarr.domain.dk
+      caddy_4.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy_4.abort: "@denied"
+      caddy_4.reverse_proxy: 10.0.1.151:8989
+      caddy_5: lidarr.domain.dk
+      caddy_5.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy_5.abort: "@denied"
+      caddy_5.reverse_proxy: 10.0.1.151:8686
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/gluetun:/gluetun
+    environment:
+#      - 'SERVER_COUNTRIES=Switzerland'
+#      - 'SERVER_CITIES=Zurich'
+      - 'VPN_SERVICE_PROVIDER=custom' # custom due to server missing in server list.
+      - 'VPN_TYPE=wireguard' # Wireguard or openvpn, i use wireguard
+      - 'VPN_ENDPOINT_IP=11.11.11.11' # Wireguard ip of provider server
+      - 'VPN_ENDPOINT_PORT=58237' # Wireguard port on provider server
+      - 'WIREGUARD_PUBLIC_KEY=quickbrownfox.jumps.over-thelazyfox=' # Server Public Key
+      - 'WIREGUARD_PRIVATE_KEY=quickbrownfox.jumps.over-thelazyfox' # My Private Key
+      - 'WIREGUARD_ADDRESSES=11.11.11.20/32' # assigned server prefix
+      - 'WIREGUARD_IMPLEMENTATION=kernelspace' # kernelspace if possible, userspace takes too much CPU, other options are: auto & userspace. "sudo modprobe wireguard"
+      - 'WIREGUARD_ALLOWED_IPS=0.0.0.0/0' # IP prefixes allowed through the tunnel 0.0.0.0/0 due to we are connecting to Public IPs at random
+      #- 'HEALTH_TARGET_ADDRESS=cloudflare.com:443' # server we poll via tunnel to check health on tunnel
+      - 'FIREWALL_OUTBOUND_SUBNETS=10.0.1.0/24,10.20.30.0/24,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10' # Permit other services to connect
+      - 'TZ=Europe/Copenhagen' # timezone for correct logs
+     # - 'FIREWALL_VPN_INPUT_PORTS=33242'
+      - 'LOG_LEVEL=debug'
+      - 'HTTPPROXY=on'
+
+networks:
+  gluetun_network:
+
+   external: true

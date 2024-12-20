@@ -1,0 +1,52 @@
+services:
+
+ influxdb:
+
+    command:
+      - "influxd"
+
+    container_name: "influxdb"
+
+    entrypoint:
+      - "/entrypoint.sh"
+
+    environment:
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "GOSU_VER=1.12"
+      - "INFLUXDB_VERSION=2.7.1"
+      - "INFLUX_CLI_VERSION=2.7.3"
+      - "INFLUX_CONFIGS_PATH=/etc/influxdb2/influx-configs"
+      - "INFLUXD_INIT_PORT=9999"
+      - "INFLUXD_INIT_PING_ATTEMPTS=600"
+      - "DOCKER_INFLUXDB_INIT_CLI_CONFIG_NAME=default"
+
+    image: "influxdb:latest"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    networks:
+      - caddy
+    labels:
+      caddy: influxdb.domain.dk
+      caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy.abort: "@denied"
+      caddy.reverse_proxy: "{{upstreams 8086}}"
+
+    ports:
+      - "8086:8086/tcp"
+
+    volumes:
+      - "/media/Colo/Server/Persistent-Storage/influxdb:/var/lib/influxdb2"
+      - "/media/Colo/Server/Persistent-Storage/influxdb:/etc/influxdb2"
+
+    healthcheck: 
+     test: curl --fail http://localhost:8086 || exit 1 
+     interval: 10s 
+     retries: 5 
+     start_period: 5s 
+     timeout: 10s
+networks:
+  caddy:
+    external: true

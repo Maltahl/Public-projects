@@ -1,0 +1,66 @@
+services:
+
+  qbittorrent:
+
+    container_name: "qbittorrentv2"
+
+    entrypoint:
+      - "/init"
+
+    environment:
+      - "PGID=1000"
+      - "TZ=Etc/UTC"
+      - "WEBUI_PORT=8080"
+      - "FILE__PASSWORD=/media/Server/Persistent-Storage/qbit/secrets/mysecretpassword"
+      - "PUID=1000"
+      - "PATH=/lsiopy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "PS1=$(whoami)@$(hostname):$(pwd)\\$"
+      - "HOME=/config"
+      - "TERM=xterm"
+      - "S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0"
+      - "S6_VERBOSITY=1"
+      - "S6_STAGE2_HOOK=/docker-mods"
+      - "VIRTUAL_ENV=/lsiopy"
+      - "LSIO_FIRST_PARTY=true"
+      - "XDG_CONFIG_HOME=/config"
+      - "XDG_DATA_HOME=/config"
+
+    image: "lscr.io/linuxserver/qbittorrent:latest"
+
+    #labels:
+    #  caddy: download.domain.dk
+    #  caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+    #  caddy.abort: "@denied"
+    #  caddy.reverse_proxy: "{{upstreams 8080}}"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    network_mode: "container:gluetun"
+
+   # ports:
+   #   - "6881:6881/tcp"
+   #   - "6881:6881/udp"
+   #   - "8080:8080/tcp"
+    healthcheck: 
+     test: curl --fail http://localhost:8080 || exit 1 
+     interval: 10s 
+     retries: 5 
+     start_period: 5s 
+     timeout: 10s
+
+    restart: "unless-stopped"
+
+    volumes:
+      - "/media/Colo:/media"
+      - "/media/Colo/Downloads:/downloads"
+      - "/media/Colo/Server/Persistent-Storage/qbit:/config"
+
+    working_dir: "/"
+
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+networks:
+  gluetun_network:
+   external: true

@@ -1,0 +1,53 @@
+services:
+
+ grafana:
+    container_name: "grafana"
+    entrypoint:
+      - "/run.sh"
+    environment:
+      - "PATH=/usr/share/grafana/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "GF_PATHS_CONFIG=/etc/grafana/grafana.ini"
+      - "GF_PATHS_DATA=/var/lib/grafana"
+      - "GF_PATHS_HOME=/usr/share/grafana"
+      - "GF_PATHS_LOGS=/var/log/grafana"
+      - "GF_PATHS_PLUGINS=/var/lib/grafana/plugins"
+      - "GF_PATHS_PROVISIONING=/etc/grafana/provisioning"
+
+    hostname: "6e6e4833a70e"
+
+    image: "grafana/grafana:latest"
+
+    networks:
+      - caddy
+    labels:
+      caddy: grafana.domain.dk
+      caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy.abort: "@denied"
+      caddy.reverse_proxy: "{{upstreams 3000}}"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+
+
+    ports:
+      - "3001:3000/tcp"
+
+    user: "472"
+
+    volumes:
+      - "/media/Colo/Server/Persistent-Storage/grafana:/config"
+
+      
+    working_dir: "/usr/share/grafana"
+
+    healthcheck: 
+     test: curl --fail http://localhost:3000 || exit 1 
+     interval: 10s 
+     retries: 5 
+     start_period: 5s 
+     timeout: 10s
+networks:
+  caddy:
+    external: true

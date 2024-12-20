@@ -1,0 +1,60 @@
+name: lancache
+services:
+    monolithic:
+        restart: unless-stopped
+        container_name: lancache
+        environment:
+            - BEAT_TIME=1h
+            - CACHE_DISK_SIZE=1000g
+            - CACHE_DOMAINS_BRANCH=master
+            - CACHE_DOMAINS_REPO=https://github.com/dgibbs64/cache-domains-with-linux.git
+            - CACHE_INDEX_SIZE=500m
+            - CACHE_MAX_AGE=3560d
+            - CACHE_MODE=monolithic
+            - CACHE_SLICE_SIZE=1m
+            - GENERICCACHE_VERSION=2
+            - LANG=en_GB.UTF-8
+            - LANGUAGE=en_GB.UTF-8
+            - LC_ALL=en_GB.UTF-8
+            - LOGFILE_RETENTION=3560
+            - NGINX_LOG_FORMAT=cachelog
+            - NGINX_WORKER_PROCESSES=auto
+            - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - SUPERVISORD_EXIT_ON_FATAL=1
+            - SUPERVISORD_LOGLEVEL=WARN
+            - TZ=Europe/Copenhagen
+            - UPSTREAM_DNS=10.0.1.151 10.0.1.152
+            - WEBUSER=www-data
+        volumes:
+            - /media/cache:/data/cache
+            - /cache/logs:/data/logs
+        ports:
+            - 80:80
+            - 443:443
+        image: lancachenet/monolithic:latest
+        network_mode: "host"
+    lancache-dns:
+        restart: unless-stopped
+        container_name: lancache-dns
+        ports:
+            - 53:53/udp
+        environment:
+            - CACHE_DOMAINS_BRANCH=master
+            - CACHE_DOMAINS_REPO=https://github.com/dgibbs64/cache-domains-with-linux.git
+            - ENABLE_DNSSEC_VALIDATION=false
+            - LANCACHE_DNSDOMAIN=cache.lancache.net
+            - LANCACHE_IP=10.0.1.59 # point to upstream dns
+            - LANG=en_GB.UTF-8
+            - LANGUAGE=en_GB.UTF-8
+            - LC_ALL=en_GB.UTF-8
+            - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - STEAMCACHE_DNS_VERSION=1
+            - SUPERVISORD_EXIT_ON_FATAL=1
+            - SUPERVISORD_LOGLEVEL=WARN
+            - TZ=Europe/Copenhagen
+            - UPSTREAM_DNS=10.0.1.151;10.0.1.152
+            - USE_GENERIC_CACHE=true
+            #- USE_GENERIC_CACHE=true
+            #- LANCACHE_IP=$HOST_IP
+        image: lancachenet/lancache-dns:latest
+        network_mode: "host"

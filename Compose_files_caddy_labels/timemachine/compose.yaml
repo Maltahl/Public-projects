@@ -1,0 +1,61 @@
+services:
+
+  timemachine:
+
+    command:
+      - "s6-svscan"
+      - "/etc/s6"
+
+    container_name: "timemachine"
+
+    entrypoint:
+      - "/entrypoint.sh"
+
+    environment:
+      - "CUSTOM_SMB_CONF=false"
+      - "DEBUG_LEVEL=1"
+      - "PASSWORD=timemachine"
+      - "SET_PERMISSIONS=false"
+      - "SHARE_NAME=TimeMachine"
+      - "SMB_METADATA=stream"
+      - "SMB_PORT=445"
+      - "ADVERTISED_HOSTNAME="
+      - "CUSTOM_USER=false"
+      - "EXTERNAL_CONF="
+      - "TM_GROUPNAME=timemachine"
+      - "TM_UID=1000"
+      - "TM_GID=1000"
+      - "SMB_INHERIT_PERMISSIONS=no"
+      - "SMB_NFS_ACES=no"
+      - "MIMIC_MODEL=TimeCapsule8,119"
+      - "HIDE_SHARES=no"
+      - "TM_USERNAME=timemachine"
+      - "SMB_VFS_OBJECTS=acl_xattr fruit streams_xattr"
+      - "VOLUME_SIZE_LIMIT=0"
+      - "WORKGROUP=WORKGROUP"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+    hostname: "docker"
+
+    image: "mbentley/timemachine:smb"
+
+    ipc: "private"
+
+    labels:
+      maintainer: "Matt Bentley <mbentley@mbentley.net>"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    network_mode: "host"
+
+    restart: "always"
+
+    volumes:
+      - "/media/Colo/Backup/timemachine:/opt/timemachine"
+      - "/media/Colo/Server/Persistent-Storage/timemachine:/run/samba"
+      - "/media/Colo/Server/Persistent-Storage/timemachine:/var/lib/samba"
+      - "/media/Colo/Server/Persistent-Storage/timemachine:/var/cache/samba"
+
+    working_dir: "/"

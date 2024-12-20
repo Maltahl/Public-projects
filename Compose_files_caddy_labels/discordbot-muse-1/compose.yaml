@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  muse:
+    image: ghcr.io/museofficial/muse:latest
+    restart: always
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/discordbot:/data
+    environment:
+      - DISCORD_TOKEN=quickbrownfox.jumps.over-thelazyfox
+      - YOUTUBE_API_KEY=quickbrownfox.jumps.over-thelazyfox
+      - SPOTIFY_CLIENT_ID=quickbrownfox.jumps.over-thelazyfox
+      - SPOTIFY_CLIENT_SECRET=quickbrownfox.jumps.over-thelazyfox

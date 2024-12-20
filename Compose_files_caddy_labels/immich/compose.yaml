@@ -1,0 +1,86 @@
+version: "3.8"
+
+services:
+  immich-server:
+    container_name: immich_server
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    #command: [ "start.sh", "immich" ]
+    volumes:
+      - /media/Colo/Photos/immich:/usr/src/app/upload
+    devices:
+    - /dev/dri/renderD128:/dev/dri/renderD128
+    env_file:
+      - .env
+    ports:
+      - 2283:3001
+    depends_on:
+      - redis
+      - database
+    restart: always
+    networks:
+      - caddy
+    labels:
+      caddy: immich.domain.dk
+      caddy.reverse_proxy: "{{upstreams 3001}}"
+
+
+#  immich-microservices:
+#    container_name: immich_microservices
+#    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+#    deploy:
+#     resources:
+#      limits:
+#       # Number of CPU threads
+#       cpus: '1.00'
+#    devices:
+#    - /dev/dri/renderD128:/dev/dri/renderD128
+#    command: [ "start.sh", "microservices" ]
+#    volumes:
+#      - /media/Colo/Photos/immich:/usr/src/app/upload
+#    env_file:
+#      - stack.env
+#    depends_on:
+#     - redis
+#     - database
+#    restart: always
+
+  immich-machine-learning:
+    container_name: immich_machine_learning
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    deploy:
+     resources:
+      limits:
+       # Number of CPU threads
+       cpus: '1.00'
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/immich/model-cache:/cache
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - caddy
+
+  redis:
+    container_name: immich_redis
+    image: redis:6.2-alpine@sha256:70a7a5b641117670beae0d80658430853896b5ef269ccf00d1827427e3263fa3
+    restart: always
+    networks:
+     - caddy
+
+  database:
+    container_name: immich_postgres
+    image: tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/immich/pgdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - caddy
+networks:
+  caddy:
+    external: true

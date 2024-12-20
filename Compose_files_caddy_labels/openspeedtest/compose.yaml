@@ -1,0 +1,18 @@
+services:
+    speedtest:
+        restart: unless-stopped
+        container_name: openspeedtest
+        ports:
+            - '3000:3000'
+#            - '3001:3001'
+        image: openspeedtest/latest
+        networks:
+        - caddy
+        labels:
+         caddy: speedtest.domain.dk
+         caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+         caddy.abort: "@denied"
+         caddy.reverse_proxy: "{{upstreams 3000}}"
+networks:
+ caddy:
+  external: true

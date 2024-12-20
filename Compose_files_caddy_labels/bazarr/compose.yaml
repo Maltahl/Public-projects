@@ -1,0 +1,25 @@
+version: "2.1"
+services:
+  bazarr:
+    network_mode: "container:gluetun"
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    labels:
+      caddy: bazarr.domain.dk
+      caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy.abort: "@denied"    
+      caddy.reverse_proxy: "{{upstreams 6767}}"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/bazarr/config:/config
+      - /media/Colo/Anime:/anime #optional
+      - /media/Colo/Movies:/movies #optional
+      - /media/Colo/TV-Series:/tv #optional
+    #ports:
+     # - 6767:6767
+    restart: unless-stopped
+networks:
+  gluetun_network:

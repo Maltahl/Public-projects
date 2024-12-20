@@ -1,0 +1,58 @@
+services:
+
+ homeassistant:
+    container_name: "homeassistant"
+    entrypoint:
+      - "/init"
+    environment:
+      - "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "LANG=C.UTF-8"
+      - "S6_BEHAVIOUR_IF_STAGE2_FAILS=2"
+      - "S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0"
+      - "S6_CMD_WAIT_FOR_SERVICES=1"
+      - "S6_SERVICES_READYTIME=50"
+      - "WHEELS_LINKS=https://wheels.home-assistant.io/musllinux/"
+      - "S6_SERVICES_GRACETIME=220000"
+
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+
+    labels:
+      io.hass.arch: "amd64"
+      io.hass.base.arch: "amd64"
+      io.hass.base.image: "ghcr.io/home-assistant/amd64-base:3.18"
+      io.hass.base.name: "python"
+      io.hass.base.version: "2023.08.0"
+      io.hass.type: "core"
+      io.hass.version: "2023.9.3"
+      org.opencontainers.image.authors: "The Home Assistant Authors"
+      org.opencontainers.image.created: "2023-09-24 17:04:29+00:00"
+      org.opencontainers.image.description: "Open-source home automation platform running on Python 3"
+      org.opencontainers.image.documentation: "https://www.home-assistant.io/docs/"
+      org.opencontainers.image.licenses: "Apache License 2.0"
+      org.opencontainers.image.source: "https://github.com/home-assistant/core"
+      org.opencontainers.image.title: "Home Assistant"
+      org.opencontainers.image.url: "https://www.home-assistant.io/"
+      org.opencontainers.image.version: "2023.9.3"
+      caddy: homeassistant.domain.dk
+      caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy.abort: "@denied"         
+      caddy.reverse_proxy: host.docker.internal:8123
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    network_mode: "host"
+
+    volumes:
+      - "/media/Colo/Server/Persistent-Storage/homeassistant:/config"
+
+    working_dir: "/config"
+
+
+    healthcheck: 
+     test: curl --fail http://localhost:8123 || exit 1 
+     interval: 10s 
+     retries: 5 
+     start_period: 5s 
+     timeout: 10s

@@ -1,0 +1,35 @@
+services:
+
+  airconnect-aircast:
+
+
+    container_name: "airconnect-aircast"
+
+    entrypoint:
+      - "/init"
+
+    environment:
+      - "PATH=/lsiopy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "HOME=/root"
+      - "LANGUAGE=en_US.UTF-8"
+      - "LANG=en_US.UTF-8"
+      - "TERM=xterm"
+      - "S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0"
+      - "S6_VERBOSITY=1"
+      - "S6_STAGE2_HOOK=/docker-mods"
+      - "VIRTUAL_ENV=/lsiopy"
+      - "ARCH_VAR=amd64"
+
+    hostname: "docker"
+
+    image: "1activegeek/airconnect:latest"
+
+    ipc: "private"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    network_mode: "host"
+
+    working_dir: "/"

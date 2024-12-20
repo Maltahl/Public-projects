@@ -1,0 +1,78 @@
+services:
+
+  unifi-poller:
+
+    cap_drop:
+      - "AUDIT_CONTROL"
+      - "BLOCK_SUSPEND"
+      - "DAC_READ_SEARCH"
+      - "IPC_LOCK"
+      - "IPC_OWNER"
+      - "LEASE"
+      - "LINUX_IMMUTABLE"
+      - "MAC_ADMIN"
+      - "MAC_OVERRIDE"
+      - "NET_ADMIN"
+      - "NET_BROADCAST"
+      - "SYSLOG"
+      - "SYS_ADMIN"
+      - "SYS_BOOT"
+      - "SYS_MODULE"
+      - "SYS_NICE"
+      - "SYS_PACCT"
+      - "SYS_PTRACE"
+      - "SYS_RAWIO"
+      - "SYS_RESOURCE"
+      - "SYS_TIME"
+      - "SYS_TTY_CONFIG"
+      - "WAKE_ALARM"
+
+    container_name: "unifi-poller"
+
+    entrypoint:
+      - "/usr/bin/unpoller"
+
+    environment:
+      - "UP_UNIFI_DEFAULT_PASS=quickbrownfox.jumps.over-thelazyfox"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      - "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"
+      - "UP_UNIFI_DEFAULT_URL=https://10.0.1.1:443"
+      - "UP_UNIFI_DEFAULT_USER=username"
+      - "UP_INFLUXDB_URL=http://10.0.1.151:8086"
+      - "UP_INFLUXDB_DB=unifi"
+      - "UP_INFLUXDB_USER=unifi-user"
+      - "UP_INFLUXDB_PASS=quickbrownfox.jumps.over-thelazyfox"
+      - "UP_PROMETHEUS_DISABLE=true"
+
+    hostname: "5cb2153ba617"
+
+    image: "ghcr.io/unpoller/unpoller:latest"
+
+    ipc: "private"
+
+    labels:
+      org.opencontainers.image.created: "2023-11-06T14:27:31Z"
+      org.opencontainers.image.description: "'Telemetry and Observability for your UniFi Network'"
+      org.opencontainers.image.documentation: "'https://unpoller.com/docs/install/docker'"
+      org.opencontainers.image.licenses: "MIT"
+      org.opencontainers.image.revision: "6277e443a2c7756076acd10ae953f8d5bac8f183"
+      org.opencontainers.image.source: "https://github.com/unpoller/unpoller"
+      org.opencontainers.image.title: "unpoller"
+      org.opencontainers.image.url: "'https://unpoller.com'"
+      org.opencontainers.image.vendor: "unpoller"
+      org.opencontainers.image.version: "2.9.4"
+
+    logging:
+      driver: "json-file"
+      options: {}
+
+    mac_address: "02:42:ac:11:00:05"
+
+    network_mode: "bridge"
+
+    user: "0"
+
+    volumes:
+      - "/media/Colo/Server/Persistent-Storage/unifi-poller:/config"
+
+    working_dir: "/"

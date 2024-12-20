@@ -1,0 +1,30 @@
+version: "3.4"
+services:
+    tdarr:
+      container_name: tdarr
+      image: haveagitgat/tdarr_acc:latest
+      restart: unless-stopped
+      network_mode: bridge
+      ports:
+        - 8265:8265 # webUI port
+        - 8266:8266 # server port
+        - 8267:8267 # Internal node port
+        - 8268:8268 # Example extra node port
+      environment:
+        - TZ=Europe/Copenhagen
+        - PUID=1000
+        - PGID=1000
+        - UMASK_SET=002
+        - serverIP=0.0.0.0
+        - serverPort=8266
+        - webUIPort=8265
+        - internalNode=true
+        - nodeID=node1
+      devices:
+        - /dev/dri/renderD128:/dev/dri/renderD128
+      volumes:
+        - /media/Colo/Server/Persistent-Storage/tdarr/server:/app/server
+        - /media/Colo/Server/Persistent-Storage/tdarr/configs:/app/configs
+        - /media/Colo/Server/Persistent-Storage/tdarr/logs:/app/logs
+        - /media/Colo:/media/Colo
+        - ./tdarr/transcode_cache:/temp
