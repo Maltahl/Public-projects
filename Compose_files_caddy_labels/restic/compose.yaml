@@ -4,7 +4,7 @@ services:
   backup:
     image: mazzolino/restic
     container_name: restic
-    hostname: frma-docker-backup
+    hostname: docker-backup
     environment:
       RUN_ON_STARTUP: "true" #change as you wish
       BACKUP_CRON: "0 */12 * * *" #this is twice daily, i.e., every 12 hours
@@ -31,7 +31,7 @@ services:
   prune:
     image: mazzolino/restic
     container_name: restic-prune
-    hostname: frma-docker-backup
+    hostname: docker-backup
     environment:
       RUN_ON_STARTUP: "true"
       PRUNE_CRON: "0 0 4 * * *"
@@ -44,7 +44,7 @@ services:
   check:
     image: mazzolino/restic
     container_name: restic-check
-    hostname: frma-docker-backup
+    hostname: docker-backup
     environment:
       RUN_ON_STARTUP: "false"
       CHECK_CRON: "0 15 5 * * *"
