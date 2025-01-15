@@ -1,0 +1,21 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      DOMAIN: "https://vaultwarden.domain.dk"
+    ports:
+      - 9980:80
+    volumes:
+      - /media/Colo/Server/Persistent-Storage/vaultwarden:/data/
+    networks:
+      - caddy
+    labels:
+      caddy: vaultwarden.domain.dk
+      caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+      caddy.abort: "@denied"
+      caddy.reverse_proxy: "{{upstreams 80}}"
+networks:
+   caddy:
+    external: true
