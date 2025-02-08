@@ -1,0 +1,18 @@
+services:
+    it-tools:
+        image: 'corentinth/it-tools:latest'
+        ports:
+            - '8880:80'
+        restart: unless-stopped
+        container_name: it-tools
+        networks:
+          - caddy
+        labels:
+         caddy: it-tools.domain.dk
+         caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+         caddy.abort: "@denied"
+         caddy.reverse_proxy: "{{upstreams 80}}"
+
+networks:
+  caddy:
+    external: true
