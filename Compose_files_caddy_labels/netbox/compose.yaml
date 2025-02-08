@@ -1,0 +1,60 @@
+services:
+    nb_app:
+        image: lscr.io/linuxserver/netbox:latest
+        container_name: netbox
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=${TZ}
+            - SUPERUSER_EMAIL=${SUPERUSER_EMAIL}
+            - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
+            - ALLOWED_HOST=${ALLOWED_HOST}
+            - DB_NAME=netbox
+            - DB_USER=netbox
+            - DB_PASSWORD=${DB_PASSWORD}
+            - DB_HOST=nb_db
+            - DB_PORT=5432
+            - REDIS_HOST=nb_redis
+            - REDIS_PORT=6379
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+            - REDIS_DB_TASK=0
+            - REDIS_DB_CACHE=1
+        depends_on:
+            - nb_db
+            - nb_redis
+        volumes:
+            - /media/Colo/Server/Persistent-Storage/netbox/app:/config
+        ports:
+            - 8000:8000
+        restart: unless-stopped
+        labels:
+         caddy: netbox.domain.dk
+         caddy.@denied.not: "remote_ip 100.64.0.0/10 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
+         caddy.abort: "@denied"
+         caddy.reverse_proxy: "{{upstreams 8000}}"
+        networks:
+        - caddy
+
+    nb_db:
+        image: postgres:latest
+        restart: unless-stopped
+        volumes:
+            - /media/Colo/Server/Persistent-Storage/netbox/db-data:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=${DB_PASSWORD}
+            - POSTGRES_DB=netbox
+            - POSTGRES_USER=netbox
+        networks:
+        - caddy
+
+    nb_redis:
+        image: redis:latest
+        restart: unless-stopped
+        command: redis-server --loglevel warning --requirepass ${REDIS_PASSWORD}
+        volumes:
+            - /media/Colo/Server/Persistent-Storage/netbox/redis:/data
+        networks:
+        - caddy
+networks:
+   caddy:
+    external: true
